@@ -58,6 +58,7 @@ const User=mongoose.model("User",UserSchema);
 //we will create a pre hook to encrypt the password in the mdoel
 
 UserSchema.pre("save", async function (next) {
+    if(!this.isModified("password")) return next();
     try {
         const salt= await bcrypt.genSalt(10);
         this.password=await bcrypt.hash(this.password,salt);

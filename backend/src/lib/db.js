@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-
+import "dotenv"
 export const connectDB=async()=>{
     try{ 
      const conn=   await mongoose.connect(process.env.MONGO_URI);
@@ -7,5 +7,6 @@ export const connectDB=async()=>{
     }
     catch(error){
    console.log("connection failed to mongodb");
+   console.log(error)
     }
 }

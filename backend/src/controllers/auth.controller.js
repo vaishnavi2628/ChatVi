@@ -1,64 +1,108 @@
-
-
 import jwt from "jsonwebtoken";
-import User from "../models/User";
+import User from "../models/User.js";
 
-export async function signup(req,res){
-   const {email,password,fullName}=req.body;
+export async function signup(req, res) {
+  const { email, password, fullName } = req.body;
 
-    try {
-        if(!email||!password||!fullName){
-            return res.status(400).json({
-                message:"All fields are required";
-            });
-        }
+  try {
+    if (!email || !password || !fullName) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
 
-        if(password.length<6){
-            return res.status(400).json({
-                message:"Password must be at least 6 chacaters"
-            });
-        }
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters",
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: "Invalid email format" });
-    }
-    const existingUser=User.findOne({email});
-    if(existingUser){
-        return res.status(400).json({
-            message:"Email already exist"
-        });
-    }
-
-    const avatar=`https://api.dicebear.com/9.x/pixel-art/svg?seed=Jane&hair=long01,long02,long03,long04,long05`;
-    const newUser= new User.create({
-        email,
-        fullName,
-
-        password,
-        profilePic:avatar,
-    });
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET_KEY, {
-        expiresIn: "7d",
+      return res.status(400).json({
+        message: "Invalid email format",
       });
+    }
+
+  
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Email already exists",
+      });
+    }
+
+    const avatar = `https://api.dicebear.com/9.x/pixel-art/svg?seed=${fullName}`;
       
 
-       
+
+
+
+    const newUser = await User.create({
+      email,
+      fullName,
+      password,
+      profilePic: avatar,
+    });
+
+    const token = jwt.sign(
+      { userId: newUser._id },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.cookie("jwt", token, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "User account created",
+      user: newUser,
+    });
+  } catch (error) {
+    console.log("Error in signup controller", error);
+
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+}
+
+export async function login(req, res) {
+    try {
+        const{email, password}=req.body;
+        if(!email||!password){
+            return res.status(400).json({
+                message:"All fields are required"
+            });
+
+        }
+
+
+        const user= await User.findOne({email});
+        if(!user){
+            return res.status(401).json({
+                message:"email is not registered or incorrecr password"
+            });
+        }
+         
+        const isPasswordCorrect= await user.compareP
+
+
+
     } catch (error) {
         
     }
-
-
-
-
 }
 
-export async function login(req,res){
-    res.send("login routeiiiii");
+export async function logout(req, res) {
+  res.send("logout route");
 }
-
-
-export  async function logout(req,res){
-    res.send("logout route");
-}
-

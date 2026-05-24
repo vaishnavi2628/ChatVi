@@ -1,70 +1,84 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-const UserSchema=new mongoose.Schema({
-    fullName:{
-      type:String,
-       required:true, 
+const UserSchema = new mongoose.Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
-    },
-    password:{
-        type:String,
-        required:true,
-        minLength:6,
-    },
-    bio:{
-        type:String,
-        default:"",
-    },
-    profilePic:{
-        type:String,
-        default:"",
-    },
-    nativeLanguage:{
-        type:String,
-        default:"",
-    },
-    learningLanguage:{
-        type:String,
-        default:"",
-    },
-    location:{
-        type:String,
-        default:"",
-    },
-    isOnboarded:{
-        type:Boolean,
-        default:false,
-    },
-    friends:[
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"User",
 
-        }
-    ]
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
 
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
+    },
 
-},{timestamps:true});
+    bio: {
+      type: String,
+      default: "",
+    },
 
-const User=mongoose.model("User",UserSchema);
+    profilePic: {
+      type: String,
+      default: "",
+    },
 
+    nativeLanguage: {
+      type: String,
+      default: "",
+    },
 
-//pRe hook//
-//we will create a pre hook to encrypt the password in the mdoel
+    learningLanguage: {
+      type: String,
+      default: "",
+    },
 
-UserSchema.pre("save", async function (next) {
-    if(!this.isModified("password")) return next();
-    try {
-        const salt= await bcrypt.genSalt(10);
-        this.password=await bcrypt.hash(this.password,salt);
-        next();
-    } catch (error) {
-        next(error);
-    }
-} )
+    location: {
+      type: String,
+      default: "",
+    },
+
+    isOnboarded: {
+      type: Boolean,
+      default: false,
+    },
+
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+// Pre hook for password hashing
+UserSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+
+    this.password = await bcrypt.hash(this.password, salt);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//match password method we will create
+UserSchema.methods.matchPassword= async function(enteredPassword){
+    const isPasswordCorrect= await bcrypt.compare(enteredPassword,this.password);
+    return isPasswordCorrect;
+}
+
+const User = mongoose.model("User", UserSchema);
+
 export default User;

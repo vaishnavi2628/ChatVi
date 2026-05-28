@@ -10,6 +10,7 @@ router.get("/friends",getMyFriends);
 
 
 
+router.post("/friend-request/:id", sendFriendRequest);
 
 
 

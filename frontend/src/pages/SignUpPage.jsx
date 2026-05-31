@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ShipWheelIcon } from "lucide-react";
+import { signup } from "../lib/api";
 import { Link } from "react-router";
+
+
 
 // import useSignUp from "../hooks/useSignUp";
 
@@ -11,7 +15,7 @@ const SignUpPage = () => {
     password: "",
   });
 
-  // This is how we did it at first, without using our custom hook
+
   const queryClient = useQueryClient();
   const {
     mutate: signupMutation,
@@ -151,7 +155,7 @@ const SignUpPage = () => {
           <div className="max-w-md p-8">
             {/* Illustration */}
             <div className="relative aspect-square max-w-sm mx-auto">
-              <img src="/i.png" alt="Language connection illustration" className="w-full h-full" />
+              <img src="/SignupI.png" alt="Language connection illustration" className="w-full h-full" />
             </div>
 
             <div className="text-center space-y-3 mt-6">

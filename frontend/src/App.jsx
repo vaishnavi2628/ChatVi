@@ -10,6 +10,7 @@ import Notification from './pages/NotificationsPage.jsx'
 import {Toaster} from "react-hot-toast";
 import PageLoader from "./components/PageLoader.jsx"
 import useAuthUser from './hooks/useAuthUser.jsx'
+import Layout from './components/Layout.jsx'
 
 const App = () => {
    //tanstack query
@@ -27,15 +28,24 @@ const App = () => {
     <div className="h-screen " data-theme="night">
 
       <Routes>
-        <Route path='/' element={ isAuthenticated && isOnboarded ? (<HomePage/>) :(
+        <Route path='/' element={ isAuthenticated && isOnboarded ? (
+          <Layout>
+ <HomePage/>
+          </Layout>
+          
+          
+          
+         ) :(
           <Navigate to={!isAuthenticated ?"/login" : "/onboarding"} />
         )
 
 
 
         }></Route>
-        <Route path='/signup' element={!isAuthenticated ? < SignUpPage/> : <Navigate to="/"/>}></Route>
-        <Route path='/login' element={!isAuthenticated ?    <LoginPage/> : <Navigate to="/"/>}></Route>
+        <Route path='/signup' element={!isAuthenticated ? < SignUpPage/> : <Navigate to={
+          isOnboarded ? "/": "/onboarding" }/>}></Route>
+        <Route path='/login' element={!isAuthenticated ?    <LoginPage/> : <Navigate to={
+          isOnboarded ? "/": "/onboarding" }/>}></Route>
         <Route path='/notification' element={ isAuthenticated ?   <Notification/> : <Navigate to="/login"/> }></Route>
         <Route path='/call'  element={ isAuthenticated ?    <CallPage/> : <Navigate to="/login"/>     }></Route>
         <Route path='/chat'  element={ isAuthenticated ?    <ChatPage/> : <Navigate to="/login"/>    }></Route>

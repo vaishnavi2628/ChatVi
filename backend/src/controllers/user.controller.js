@@ -13,7 +13,7 @@ export async function  getRecommendedUsers(req,res) {
                     _id:{$ne:currentUserId}
                  },
                  //exculde cuurent user's friend
-                 {$id: {$nin:currentUser.friends}},
+                 {_id: {$nin:currentUser.friends}},
                  {isOnboarded:true}
             ]
         })

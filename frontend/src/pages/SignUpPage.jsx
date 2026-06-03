@@ -1,12 +1,8 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ShipWheelIcon } from "lucide-react";
-import { signup } from "../lib/api";
+
 import { Link } from "react-router";
 
-
-
-// import useSignUp from "../hooks/useSignUp";
+import useSignUp from "../hooks/useSignUp";
 
 const SignUpPage = () => {
   const [signupData, setSignupData] = useState({
@@ -15,19 +11,19 @@ const SignUpPage = () => {
     password: "",
   });
 
-
-  const queryClient = useQueryClient();
-  const {
-    mutate: signupMutation,
-    isPending,
-    error,
-  } = useMutation({
-    mutationFn: signup,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-  });
+  // This is how we did it at first, without using our custom hook
+  // const queryClient = useQueryClient();
+  // const {
+  //   mutate: signupMutation,
+  //   isPending,
+  //   error,
+  // } = useMutation({
+  //   mutationFn: signup,
+  //   onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+  // });
 
   // This is how we did it using our custom hook - optimized version
-  // const { isPending, error, signupMutation } = useSignUp();
+  const { isPending, error, signupMutation } = useSignUp();
 
   const handleSignup = (e) => {
     e.preventDefault();
@@ -37,16 +33,16 @@ const SignUpPage = () => {
   return (
     <div
       className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
-      data-theme="forest"
+      data-theme="night"
     >
       <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
         {/* SIGNUP FORM - LEFT SIDE */}
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           {/* LOGO */}
           <div className="mb-4 flex items-center justify-start gap-2">
-            <ShipWheelIcon className="size-9 text-primary" />
+
             <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
-              Streamify
+              ChatVi
             </span>
           </div>
 
@@ -63,7 +59,7 @@ const SignUpPage = () => {
                 <div>
                   <h2 className="text-xl font-semibold">Create an Account</h2>
                   <p className="text-sm opacity-70">
-                    Join Streamify and start your language learning adventure!
+                    Join ChatVi and meet different people!
                   </p>
                 </div>
 
@@ -75,7 +71,7 @@ const SignUpPage = () => {
                     </label>
                     <input
                       type="text"
-                      placeholder="John Doe"
+                      placeholder="Your full name"
                       className="input input-bordered w-full"
                       value={signupData.fullName}
                       onChange={(e) => setSignupData({ ...signupData, fullName: e.target.value })}
@@ -89,7 +85,7 @@ const SignUpPage = () => {
                     </label>
                     <input
                       type="email"
-                      placeholder="john@gmail.com"
+                      placeholder="EXAMPLE@gmail.com"
                       className="input input-bordered w-full"
                       value={signupData.email}
                       onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
@@ -159,9 +155,9 @@ const SignUpPage = () => {
             </div>
 
             <div className="text-center space-y-3 mt-6">
-              <h2 className="text-xl font-semibold">Connect with language partners worldwide</h2>
+              <h2 className="text-xl font-semibold"></h2>
               <p className="opacity-70">
-                Practice conversations, make friends, and improve your language skills together
+               
               </p>
             </div>
           </div>

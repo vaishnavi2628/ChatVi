@@ -17,6 +17,7 @@ import NoFriendsFound from "../components/NoFriendsFound";
 const HomePage = () => {
   const queryClient = useQueryClient();
   const [outgoingRequestsIds, setOutgoingRequestsIds] = useState(new Set());
+  const [pendingUserId, setPendingUserId] = useState(null);
 
   const { data: friends = [], isLoading: loadingFriends } = useQuery({
     queryKey: ["friends"],
@@ -33,9 +34,13 @@ const HomePage = () => {
     queryFn: getOutgoingFriendReqs,
   });
 
-  const { mutate: sendRequestMutation, isPending } = useMutation({
+  const { mutate: sendRequestMutation } = useMutation({
     mutationFn: sendFriendRequest,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
+      setPendingUserId(null);
+    },
+    onError: () => setPendingUserId(null),
   });
 
   useEffect(() => {
@@ -142,8 +147,11 @@ const HomePage = () => {
                         className={`btn w-full mt-2 ${
                           hasRequestBeenSent ? "btn-disabled" : "btn-primary"
                         } `}
-                        onClick={() => sendRequestMutation(user._id)}
-                        disabled={hasRequestBeenSent || isPending}
+                        onClick={() => {
+                          setPendingUserId(user._id);
+                          sendRequestMutation(user._id);
+                        }}
+                        disabled={hasRequestBeenSent || pendingUserId === user._id}
                       >
                         {hasRequestBeenSent ? (
                           <>

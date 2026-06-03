@@ -13,11 +13,11 @@ const friendRequestSchema= new mongoose.Schema({
         ref:"User",
         required:true,
      },
-     status:{
-        type:String,
-        enum:["pending ", "accepted"],
-        default:"pending",
-     },
+     status: {
+      type: String,
+      enum: ["pending", "accepted", "rejected"], // ✅ lowercase hona chahiye
+      default: "pending",
+    },
 },{
     timestamps:true,
 });

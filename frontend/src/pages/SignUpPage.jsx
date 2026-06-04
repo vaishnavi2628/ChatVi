@@ -92,7 +92,7 @@ const SignUpPage = () => {
                       required
                     />
                   </div>
-                  {/* PASSWORD */}
+
                   <div className="form-control w-full">
                     <label className="label">
                       <span className="label-text">Password</span>

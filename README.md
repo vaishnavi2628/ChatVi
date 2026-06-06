@@ -152,7 +152,7 @@ ChatVi
 ### Clone Repository
 
 ```bash
-git clone https://github.com/your-username/streamify.git
+git clone https://github.com/your-username/ChatVi.git
 cd ChatVi
 ```
 
